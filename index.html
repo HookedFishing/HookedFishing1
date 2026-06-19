@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Hooked — cast, catch fish, earn $HOOKED on Solana. Upgrade gear and complete your fish collection." />
+  <meta name="theme-color" content="#071525" />
+  <title>Hooked — Fish. Earn. Upgrade.</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <div class="ca-bar" id="ca-bar">
+      <span class="ca-label">CA:</span>
+      <button type="button" id="ca-copy" class="ca-address" title="Click to copy contract address">98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump</button>
+    </div>
+
+    <div class="header-wallet-bar hidden" id="header-wallet-bar">
+      <span class="header-wallet-label">Current Wallet:</span>
+      <button type="button" id="header-wallet-address" class="header-wallet-address" title="Click to copy wallet address"></button>
+    </div>
+
+    <header class="top-bar">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Hooked logo" class="brand-logo" width="56" height="56" />
+        <div>
+          <h1>Hooked</h1>
+          <p class="tagline">Cast. Catch. Earn $HOOKED.</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div id="collection-badge" class="collection-badge"></div>
+        <span id="mode-badge" class="mode-badge mode-guest" title="How earnings are saved">Guest</span>
+        <div class="stat-pill balance-pill">
+          <span class="stat-label">$HOOKED</span>
+          <span id="balance" class="stat-value">0</span>
+          <span id="session-earned" class="session-earned hidden"></span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Caught</span>
+          <span id="catch-count" class="stat-value">0</span>
+        </div>
+        <span id="streak-badge" class="streak-badge hidden" title="Catch streak"></span>
+        <button type="button" id="tips-btn" class="btn btn-tips hidden" title="Show how to play" aria-label="Show how to play tips">Tips</button>
+        <button type="button" id="mute-btn" class="btn btn-mute" aria-pressed="false" title="Mute sound" aria-label="Mute sound">🔊</button>
+        <button type="button" id="account-btn" class="btn btn-account" title="Sign in with username and password">Sign In</button>
+        <span id="account-user-pill" class="account-user-pill hidden" aria-live="polite"></span>
+        <button type="button" id="sign-out-btn" class="btn btn-sign-out hidden" title="Sign out of your Hooked account">Sign Out</button>
+        <button id="wallet-btn" class="btn btn-wallet">Connect Wallet</button>
+      </div>
+    </header>
+
+    <div id="gear-strip" class="gear-strip" aria-label="Current gear levels"></div>
+    <div id="upgrade-goal" class="upgrade-goal hidden" aria-label="Progress toward next upgrade"></div>
+
+    <section id="how-to-play" class="how-to-play" aria-label="How to play"></section>
+
+    <nav class="mobile-nav" aria-label="Game sections">
+      <button type="button" class="mobile-nav-btn is-active" data-panel="play">🎣 Play</button>
+      <button type="button" class="mobile-nav-btn" data-panel="shop">🛒 Shop</button>
+      <button type="button" class="mobile-nav-btn" data-panel="dex">📖 Dex</button>
+    </nav>
+
+    <main class="game-layout">
+      <div class="game-column">
+        <section class="lake-panel" id="lake-panel" data-panel="play">
+          <div id="game-status" class="game-status" aria-live="polite" aria-atomic="true">Ready to cast</div>
+          <canvas id="game-canvas" width="720" height="480" tabindex="0" role="img" aria-label="Fishing lake — click the water to cast your line"></canvas>
+          <div id="cast-hint" class="overlay-hint">Click the water to cast your line</div>
+          <div id="bite-alert" class="bite-alert hidden" role="alert" aria-live="assertive">
+            <div class="bite-splash-icon" aria-hidden="true">💦</div>
+            <p>FISH ON!</p>
+            <span class="bite-sub">Tap to reel!</span>
+          </div>
+          <div id="catch-burst" class="catch-burst hidden" aria-hidden="true">
+            <div class="catch-burst-ring" aria-hidden="true"></div>
+            <div class="catch-burst-content">
+              <span class="catch-burst-icon" aria-hidden="true">✨</span>
+              <span id="catch-burst-name" class="catch-burst-name"></span>
+              <span id="catch-burst-reward" class="catch-burst-reward"></span>
+            </div>
+          </div>
+          <div id="reel-bar-wrap" class="reel-bar-wrap hidden">
+            <div id="reel-fish-preview" class="reel-fish-preview hidden">
+              <span id="reel-fish-icon" class="reel-fish-icon" aria-hidden="true"></span>
+              <div class="reel-fish-meta">
+                <span id="reel-fish-name" class="reel-fish-name"></span>
+                <span id="reel-fish-fight" class="reel-fish-fight"></span>
+              </div>
+            </div>
+            <div class="reel-header">
+              <p><span class="reel-zone-icon" aria-hidden="true">🎯</span> Tap when the marker is in the <span class="reel-green-label">green</span> zone</p>
+              <span id="reel-percent" class="reel-percent">0%</span>
+            </div>
+            <span id="reel-combo" class="reel-combo" aria-live="polite"></span>
+            <div class="reel-progress-outer">
+              <div id="reel-progress-fill" class="reel-progress-fill"></div>
+            </div>
+            <div class="reel-track" id="reel-track">
+              <div class="reel-zone-danger reel-zone-danger--left"></div>
+              <div class="reel-zone"></div>
+              <div class="reel-zone-danger reel-zone-danger--right"></div>
+              <div id="reel-marker" class="reel-marker"></div>
+            </div>
+            <p class="reel-hint"><span class="reel-zone-icon" aria-hidden="true">👆</span> Click or press <kbd>Space</kbd> when the yellow marker hits the <span class="reel-green-label">green</span> zone</p>
+          </div>
+        </section>
+
+        <section class="panel-card catch-log" data-panel="play">
+          <h2><span class="panel-icon" aria-hidden="true">🐟</span> Latest Catch</h2>
+          <div id="latest-catch" class="latest-catch empty">Nothing yet — cast a line!</div>
+        </section>
+
+        <section class="panel-card fish-collection" data-panel="dex">
+          <div class="fish-collection-head">
+            <h2><span class="panel-icon" aria-hidden="true">📖</span> Fish Collection</h2>
+            <div id="fishdex-filters" class="fishdex-filters" role="tablist" aria-label="Filter by rarity"></div>
+          </div>
+          <p class="shop-sub">Catch every species to complete your collection.</p>
+          <div id="fish-collection" class="fish-collection-list"></div>
+        </section>
+      </div>
+
+      <aside class="side-panel">
+        <section class="panel-card shop" data-panel="shop">
+          <h2><span class="panel-icon" aria-hidden="true">🛒</span> Gear Shop</h2>
+          <p class="shop-sub">Spend $HOOKED to catch bigger fish faster. Sign in for a saved account or connect Phantom.</p>
+          <div id="shop-list" class="shop-list"></div>
+        </section>
+
+        <section class="panel-card wallet-info" data-panel="shop">
+          <h2><span class="panel-icon" aria-hidden="true">👛</span> Your Wallet</h2>
+          <p id="account-status" class="wallet-status">Not signed in — create a free Hooked account or connect Phantom.</p>
+          <div id="current-wallet-wrap" class="current-wallet-wrap hidden">
+            <span class="current-wallet-label">Current Wallet:</span>
+            <button type="button" id="current-wallet-address" class="current-wallet-address" title="Click to copy wallet address"></button>
+          </div>
+          <div id="withdraw-section" class="withdraw-section hidden">
+            <h3 class="withdraw-title">Withdraw $HOOKED</h3>
+            <p class="withdraw-sub">Send your account balance to any Solana wallet (Phantom, etc.).</p>
+            <p class="withdraw-balance">Available: <strong id="withdraw-balance">0</strong> $HOOKED</p>
+            <form id="withdraw-form" class="withdraw-form">
+              <label class="withdraw-field">
+                <span>Destination wallet</span>
+                <input type="text" id="withdraw-destination" name="destination" placeholder="Solana address (e.g. Phantom)" autocomplete="off" spellcheck="false" required />
+              </label>
+              <label class="withdraw-field">
+                <span>Amount</span>
+                <div class="withdraw-amount-row">
+                  <input type="number" id="withdraw-amount" name="amount" min="1" step="1" placeholder="0" required />
+                  <button type="button" id="withdraw-max" class="btn btn-withdraw-max">Max</button>
+                </div>
+              </label>
+              <p id="withdraw-error" class="withdraw-error hidden" role="alert"></p>
+              <button type="submit" id="withdraw-submit" class="btn btn-withdraw">Withdraw to Wallet</button>
+            </form>
+            <p id="withdraw-note" class="wallet-note">Withdrawals send on-chain $HOOKED when the token is live and treasury is configured.</p>
+          </div>
+          <p id="wallet-status" class="wallet-status">Phantom not connected.</p>
+          <p class="wallet-note">Account balances are saved on Hooked. Catch rewards pay to your Hooked wallet on-chain when $HOOKED is live. Withdraw to Phantom or any Solana wallet.</p>
+          <p id="treasury-status" class="wallet-note"></p>
+          <div id="wallet-secret-section" class="wallet-secret-section hidden">
+            <h3 class="wallet-secret-title">Wallet Private Key</h3>
+            <p class="wallet-secret-warning">Your Hooked account includes a Solana wallet. Never share this key — anyone with it can control the wallet.</p>
+            <form id="wallet-secret-form" class="wallet-secret-form">
+              <label class="wallet-secret-field">
+                <span>Confirm password</span>
+                <input type="password" id="wallet-secret-password" name="password" autocomplete="current-password" placeholder="Your account password" />
+              </label>
+              <button type="submit" id="wallet-secret-reveal" class="btn btn-wallet-secret">Reveal private key</button>
+            </form>
+            <div id="wallet-secret-display" class="wallet-secret-display hidden">
+              <span class="wallet-secret-label">Private key (Base58)</span>
+              <code id="wallet-secret-key" class="wallet-secret-key"></code>
+              <div class="wallet-secret-actions">
+                <button type="button" id="wallet-secret-copy" class="btn btn-wallet-secret-copy">Copy key</button>
+                <button type="button" id="wallet-secret-hide" class="btn btn-wallet-secret-hide">Hide</button>
+              </div>
+            </div>
+            <p id="wallet-secret-error" class="wallet-secret-error hidden" role="alert"></p>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <p>Hooked on Solana · Earn <strong>$HOOKED</strong> for every catch · Upgrade gear · Complete the fish dex</p>
+    </footer>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="auth-modal" class="auth-modal hidden" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+      <div class="auth-modal-backdrop" data-auth-close></div>
+      <div class="auth-modal-card">
+        <button type="button" class="auth-modal-close" data-auth-close aria-label="Close sign in">×</button>
+        <h2 id="auth-modal-title" class="auth-modal-title">Hooked Account</h2>
+        <p class="auth-modal-sub">Play with a username and password. We create and manage your wallet — balances save across devices.</p>
+        <div class="auth-tabs" role="tablist">
+          <button type="button" class="auth-tab is-active" data-auth-tab="login" role="tab" aria-selected="true">Sign In</button>
+          <button type="button" class="auth-tab" data-auth-tab="register" role="tab" aria-selected="false">Create Account</button>
+        </div>
+        <form id="auth-form" class="auth-form">
+          <label class="auth-field">
+            <span>Username</span>
+            <input type="text" id="auth-username" name="username" autocomplete="username" minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" required placeholder="fisher_kid" />
+          </label>
+          <label class="auth-field">
+            <span>Password</span>
+            <input type="password" id="auth-password" name="password" autocomplete="current-password" minlength="6" required placeholder="••••••" />
+          </label>
+          <label id="auth-import-wrap" class="auth-import hidden">
+            <input type="checkbox" id="auth-import-guest" />
+            <span>Import my guest progress into this account</span>
+          </label>
+          <p id="auth-error" class="auth-error hidden" role="alert"></p>
+          <button type="submit" id="auth-submit" class="btn btn-auth-submit">Sign In</button>
+        </form>
+        <p class="auth-modal-foot">Prefer self-custody? Use <strong>Connect Wallet</strong> for Phantom instead.</p>
+      </div>
+    </div>
+
+    <div id="catch-reveal" class="catch-reveal hidden" role="dialog" aria-modal="true" aria-labelledby="catch-reveal-name">
+      <div class="catch-reveal-backdrop"></div>
+      <div id="catch-reveal-card" class="catch-reveal-card">
+        <button type="button" id="catch-reveal-close" class="catch-reveal-close" aria-label="Close catch reveal">×</button>
+        <span id="catch-reveal-new" class="catch-reveal-new hidden">NEW SPECIES</span>
+        <div id="catch-reveal-icon" class="catch-reveal-icon" aria-hidden="true"></div>
+        <span id="catch-reveal-name" class="catch-reveal-name"></span>
+        <span id="catch-reveal-rarity" class="catch-reveal-rarity"></span>
+        <span id="catch-reveal-reward" class="catch-reveal-reward"></span>
+        <span id="catch-reveal-streak" class="catch-reveal-streak hidden"></span>
+        <span id="catch-reveal-pb" class="catch-reveal-pb hidden">Personal best!</span>
+        <div class="catch-reveal-actions">
+          <button type="button" id="catch-reveal-share" class="btn btn-share">Share on X</button>
+          <button type="button" id="catch-reveal-dismiss" class="btn btn-reveal">Nice catch!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

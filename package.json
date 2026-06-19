@@ -1,0 +1,11 @@
+{
+  "name": "hooked",
+  "version": "1.0.0",
+  "description": "A simple fishing game with $HOOKED Solana token integration",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "install:server": "npm install --prefix server",
+    "postinstall": "npm install --prefix server"
+  }
+}

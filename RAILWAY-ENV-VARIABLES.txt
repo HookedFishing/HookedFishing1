@@ -1,0 +1,12 @@
+After uploading to Railway, add these in: Service → Variables
+
+SOLANA_RPC=https://api.mainnet-beta.solana.com
+TOKEN_MINT=98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump
+TOKEN_DECIMALS=6
+TREASURY_PRIVATE_KEY=(copy from your local server\.env)
+JWT_SECRET=(copy from your local server\.env)
+WALLET_ENCRYPTION_KEY=(copy from your local server\.env)
+
+Do NOT set PORT — Railway sets it automatically.
+
+Then: Settings → Networking → Generate Domain for your public URL.
