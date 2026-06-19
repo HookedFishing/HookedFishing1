@@ -1,12 +1,36 @@
-After uploading to Railway, add these in: Service → Variables
+HOOKED — RAILWAY LAUNCH CHECKLIST
+==================================
 
-SOLANA_RPC=https://api.mainnet-beta.solana.com
-TOKEN_MINT=98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump
-TOKEN_DECIMALS=6
-TREASURY_PRIVATE_KEY=(copy from your local server\.env)
-JWT_SECRET=(copy from your local server\.env)
-WALLET_ENCRYPTION_KEY=(copy from your local server\.env)
+1. GitHub repo (already pushed):
+   https://github.com/HookedFishing/HookedFishing1
 
-Do NOT set PORT — Railway sets it automatically.
+2. Railway: New Project → Deploy from GitHub → HookedFishing1
 
-Then: Settings → Networking → Generate Domain for your public URL.
+3. Service → Variables (copy values from your local server\.env):
+
+   SOLANA_RPC=https://api.mainnet-beta.solana.com
+   TOKEN_MINT=98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump
+   TOKEN_DECIMALS=6
+   TREASURY_PRIVATE_KEY=(from local server\.env)
+   JWT_SECRET=(from local server\.env — must NOT be the dev default)
+   WALLET_ENCRYPTION_KEY=(from local server\.env — 32+ characters)
+
+   Do NOT set PORT — Railway assigns it automatically.
+   NODE_ENV=production is set by the Docker image.
+
+4. Settings → Networking → Generate Domain
+
+5. OPTIONAL but recommended — persist accounts across redeploys:
+   Volumes → Add Volume → mount path: /app/server/data
+
+6. After deploy, verify:
+   https://YOUR-DOMAIN.railway.app/api/health
+   Should return ok:true, treasuryConfigured:true
+
+7. Before $HOOKED is live on Solana:
+   - Guest play and account signup work (balance saved server-side)
+   - On-chain rewards auto-enable when the mint appears on-chain
+   - Withdrawals stay disabled in the UI until rewards are live
+
+Treasury wallet (public): 7bw6Jx8AycbgZvmKJaB9pMhpUSUtfDf8GAPChUfM1Ha9
+Token mint: 98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump

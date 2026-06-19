@@ -1,0 +1,12 @@
+node_modules
+server/node_modules
+.git
+.env
+server/.env
+server/data
+*.log
+official hooked fishing
+push-to-github.bat
+deploy-railway.bat
+start.bat
+tools

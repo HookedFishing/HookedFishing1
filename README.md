@@ -25,7 +25,24 @@ python -m http.server 8080
 4. Earn **$HOOKED** for every catch.
 5. Spend tokens in the **Gear Shop** to upgrade your Rod, Line, and Bait.
 
-## Connect your wallet
+## Deploy on Railway
+
+1. Push this repo to GitHub (see `RAILWAY-ENV-VARIABLES.txt` for the full checklist).
+2. In [Railway](https://railway.app): **New Project** → **Deploy from GitHub** → select this repo.
+3. Add environment variables from `RAILWAY-ENV-VARIABLES.txt` (copy secrets from `server/.env` — never commit `.env`).
+4. **Generate Domain** under Networking.
+5. Optional: mount a volume at `/app/server/data` so account data survives redeploys.
+
+Health check: `GET /api/health` — confirms treasury, mint, and reward status.
+
+## Account play (custodial wallet)
+
+- **Sign In** creates a username/password account with a server-managed Solana wallet.
+- Balances and progress are stored on the server (`server/data/users.json` locally; use a Railway volume in production).
+- When $HOOKED is live, catches send tokens from treasury → your custodial wallet on-chain.
+- **Withdraw** sends from custodial wallet → any Solana address (enabled once token is live).
+
+## Connect your wallet (Phantom)
 
 - Click **Connect Wallet** to link a **Phantom** wallet.
 - Progress (balance, gear, catches) saves per wallet address in local storage.
