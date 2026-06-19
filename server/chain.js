@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, ".env") });
 
 export const RPC = process.env.SOLANA_RPC || "https://api.mainnet-beta.solana.com";
-export const MINT = new PublicKey(process.env.TOKEN_MINT || "98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump");
+export const MINT = new PublicKey(process.env.TOKEN_MINT || "G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump");
 export const DECIMALS = Number(process.env.TOKEN_DECIMALS) || 6;
 export const connection = new Connection(RPC, "confirmed");
 

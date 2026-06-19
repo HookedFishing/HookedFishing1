@@ -64,7 +64,7 @@ The server **watches Solana** for your token mint. The moment it goes live on-ch
 
 ## $HOOKED token
 
-Mint: `98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump`  
+Mint: `G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump`  
 Treasury: `7bw6Jx8AycbgZvmKJaB9pMhpUSUtfDf8GAPChUfM1Ha9`
 
 ## Treasury setup

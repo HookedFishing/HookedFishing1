@@ -9,7 +9,7 @@ HOOKED — RAILWAY LAUNCH CHECKLIST
 3. Service → Variables (copy values from your local server\.env):
 
    SOLANA_RPC=https://api.mainnet-beta.solana.com
-   TOKEN_MINT=98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump
+   TOKEN_MINT=G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump
    TOKEN_DECIMALS=6
    TREASURY_PRIVATE_KEY=(from local server\.env)
    JWT_SECRET=(from local server\.env — must NOT be the dev default)
@@ -33,4 +33,4 @@ HOOKED — RAILWAY LAUNCH CHECKLIST
    - Withdrawals stay disabled in the UI until rewards are live
 
 Treasury wallet (public): 7bw6Jx8AycbgZvmKJaB9pMhpUSUtfDf8GAPChUfM1Ha9
-Token mint: 98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump
+Token mint: G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump

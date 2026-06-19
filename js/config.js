@@ -4,7 +4,7 @@ export const CONFIG = {
     name: "Hooked",
     decimals: 6,
     // Set this to your SPL token mint address when $HOOKED launches on Solana.
-    mintAddress: "98YegoUGDT9nh4yykhH7qzGYhM9AG6Ztjn5UMrYjpump",
+    mintAddress: "G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump",
     rpcUrl: "https://api.mainnet-beta.solana.com",
   },
 
