@@ -25,8 +25,27 @@ const TREASURY_PUBKEY = "7bw6Jx8AycbgZvmKJaB9pMhpUSUtfDf8GAPChUfM1Ha9";
 const MINT_POLL_MS = 5000;
 
 const app = express();
+app.set("trust proxy", 1);
 
 let mintWatcher = null;
+
+function productionSecurity(req, res, next) {
+  if (process.env.NODE_ENV !== "production") return next();
+
+  const proto = req.headers["x-forwarded-proto"];
+  if (proto === "http") {
+    return res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
+  }
+
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+}
+
+app.use(productionSecurity);
 
 function startMintWatcher() {
   checkMintLaunched().then((live) => {
