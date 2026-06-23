@@ -1,36 +1,91 @@
 HOOKED — RAILWAY LAUNCH CHECKLIST
 ==================================
 
-1. GitHub repo (already pushed):
-   https://github.com/HookedFishing/HookedFishing1
+PUBLIC URL (share this):
+  https://www.hookedfishing.org
 
-2. Railway: New Project → Deploy from GitHub → HookedFishing1
+GitHub repo:
+  https://github.com/HookedFishing/HookedFishing1
 
-3. Service → Variables (copy values from your local server\.env):
+Railway app (backup URL):
+  https://hookedfishing1-production.up.railway.app
 
-   SOLANA_RPC=https://api.mainnet-beta.solana.com
-   TOKEN_MINT=G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump
-   TOKEN_DECIMALS=6
-   TREASURY_PRIVATE_KEY=(from local server\.env)
-   JWT_SECRET=(from local server\.env — must NOT be the dev default)
-   WALLET_ENCRYPTION_KEY=(from local server\.env — 32+ characters)
 
-   Do NOT set PORT — Railway assigns it automatically.
-   NODE_ENV=production is set by the Docker image.
+RAILWAY VARIABLES (Service → Variables)
+---------------------------------------
+Copy secrets from your local server\.env:
 
-4. Settings → Networking → Generate Domain
+  SOLANA_RPC=https://api.mainnet-beta.solana.com
+  TOKEN_MINT=G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump
+  TOKEN_DECIMALS=6
+  TREASURY_PRIVATE_KEY=(from local server\.env)
+  JWT_SECRET=(from local server\.env — must NOT be the dev default)
+  WALLET_ENCRYPTION_KEY=(from local server\.env — 32+ characters)
+  CANONICAL_HOST=www.hookedfishing.org
 
-5. OPTIONAL but recommended — persist accounts across redeploys:
-   Volumes → Add Volume → mount path: /app/server/data
+  Do NOT set PORT — Railway assigns it automatically.
+  NODE_ENV=production is set by the Docker image.
 
-6. After deploy, verify:
-   https://YOUR-DOMAIN.railway.app/api/health
-   Should return ok:true, treasuryConfigured:true
+  *** ACTION NEEDED: Live server may still show the OLD mint until
+  TOKEN_MINT is updated in Railway and redeployed. Check:
+  https://hookedfishing1-production.up.railway.app/api/health
+  mint should be G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump
 
-7. Before $HOOKED is live on Solana:
-   - Guest play and account signup work (balance saved server-side)
-   - On-chain rewards auto-enable when the mint appears on-chain
-   - Withdrawals stay disabled in the UI until rewards are live
 
+RAILWAY CUSTOM DOMAIN
+---------------------
+In Railway → Service → Settings → Networking → Custom Domains:
+
+  1. www.hookedfishing.org  (primary — use this in links)
+  2. hookedfishing.org      (optional apex — add separately if using Cloudflare)
+
+Both CNAME + TXT records must show green checkmarks in Railway.
+
+
+GODADDY DNS (fixes "not safe" + popup screen)
+---------------------------------------------
+The popup / security warning happens when GoDaddy FORWARDING is used instead
+of real DNS. Delete all "Domain Connected" / masked forwarding entries.
+
+DNS records only (DNS Management — NOT Forwarding):
+
+  Type   Name                  Value
+  CNAME  www                   733h7hy2.up.railway.app  (use value Railway shows)
+  TXT    _railway-verify.www   railway-verify=...        (exact value from Railway)
+
+For hookedfishing.org (no www) — GoDaddy cannot CNAME the root @ to Railway.
+Use ONE of these:
+
+  Option A (simplest on GoDaddy):
+    Forwarding → hookedfishing.org → https://www.hookedfishing.org
+    Type: Permanent (301)
+    IMPORTANT: Forward only — do NOT use "Forward with masking"
+
+  Option B (best long-term):
+    Move nameservers to Cloudflare (free)
+    Add CNAME @ and www both pointing to Railway's CNAME
+    Enable proxy (orange cloud) for free SSL on root domain
+
+
+VERIFY AFTER DNS CHANGES (wait 5–30 min)
+----------------------------------------
+  https://www.hookedfishing.org/api/health     → JSON with ok:true
+  https://www.hookedfishing.org                → game loads, padlock in browser
+  https://hookedfishing.org                    → redirects to www (no popup)
+
+If /api/health returns "Not Found" → TXT record missing or domain not verified in Railway.
+If browser says "Not secure" on www → wait for Railway SSL or re-check DNS records.
+
+
+OPTIONAL — persist accounts across redeploys
+----------------------------------------------
+  Railway → Volumes → mount path: /app/server/data
+
+
+TOKEN / TREASURY
+----------------
 Treasury wallet (public): 7bw6Jx8AycbgZvmKJaB9pMhpUSUtfDf8GAPChUfM1Ha9
 Token mint: G5w7X3X1zPMyCu5y5rr1qYV175iFkFVyZAy9pDLepump
+
+Before on-chain rewards work, treasury needs $HOOKED tokens + SOL for fees.
+Rewards auto-enable when mint is detected live on Solana (rewardsLive: true).

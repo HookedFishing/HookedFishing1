@@ -21,6 +21,7 @@ dotenv.config({ path: path.join(__dirname, ".env") });
 validateProductionEnv();
 
 const PORT = Number(process.env.PORT) || 3001;
+const CANONICAL_HOST = process.env.CANONICAL_HOST || "www.hookedfishing.org";
 const TREASURY_PUBKEY = "7bw6Jx8AycbgZvmKJaB9pMhpUSUtfDf8GAPChUfM1Ha9";
 const MINT_POLL_MS = 5000;
 
@@ -32,12 +33,18 @@ let mintWatcher = null;
 function productionSecurity(req, res, next) {
   if (process.env.NODE_ENV !== "production") return next();
 
+  const host = (req.headers.host || "").split(":")[0].toLowerCase();
+
+  if (host === "hookedfishing.org") {
+    return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+  }
+
   const proto = req.headers["x-forwarded-proto"];
   if (proto === "http") {
     return res.redirect(301, `https://${req.headers.host}${req.originalUrl}`);
   }
 
-  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -80,6 +87,7 @@ app.get("/api/health", (_req, res) => {
     waitingForLaunch: !rewardsLive,
     treasuryConfigured: Boolean(treasury),
     treasuryWallet: treasury?.publicKey.toBase58() || TREASURY_PUBKEY,
+    canonicalUrl: `https://${CANONICAL_HOST}`,
   });
 });
 
